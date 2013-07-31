@@ -1,8 +1,9 @@
 (ns just
   (:require [domina.events :as ev]
             [domina]
-            [cljs.core.async :as async])
-  (:use [domina.xpath :only [xpath]] [domina.css :only [sel]]))
+            [cljs.core.async :refer [chan timeout]])
+  (:use [domina.xpath :only [xpath]] [domina.css :only [sel]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 ;(ev/listen! (domina/by-id "cha") :click (fn [evt] (domina/log (str (domina/attr (domina/by-id "cha") "text") "button clicked!"))))
 
@@ -14,7 +15,12 @@
 
 (defn ^:export run-once [] (color (xpath (str "//tr[" (rand-1 10) "]/td[" (rand-1 12) "]")) (rand-color)))
 
-(defn ^:export run-all [] (doall (map #(color % (rand-color)) (domina/nodes (xpath "//td")))))
+(defn ^:export run-all [] (doseq [e (domina/nodes (xpath "//td"))] (color e (rand-color))))
 
-(defn ^:export testt [] (async/chan))
-;(defn ^:export run2 [] (map #(.log js/console %) (.getElementsByTagName js/document "td")))
+; -- Main
+
+(run-all)
+(go
+  (while true
+    (<! (timeout 400))
+    (run-once)))

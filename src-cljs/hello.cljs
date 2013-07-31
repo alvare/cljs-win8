@@ -22,5 +22,5 @@
 (run-all)
 (go
   (while true
-    (<! (timeout 400))
+    (<! (timeout (+ (rand-int 900) 200)))
     (run-once)))

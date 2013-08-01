@@ -39,7 +39,7 @@
                  :default   [ 0 "" "" ]})) ;; TODO IE can't serialize <link> and <script> tags normally
 
 (defn- remove-extraneous-tbody!
-  [div html]
+  [div html tag-name start-wrap]
   (let [no-tbody? (not (re-find re-tbody html))
         tbody (if (and (= tag-name "table")
                        no-tbody?)
@@ -63,7 +63,8 @@
                                                   html)))
                  (.-firstChild div)))
 
-(defn- html-to-dom
+(defn html-to-dom
+  "takes an string of html and returns a NodeList of dom fragments"
   [html]
   (let [html (cstring/replace html re-xhtml-tag "<$1></$2>")
         tag-name (. (str (second (re-find re-tag-name html)))
@@ -81,7 +82,7 @@
                 (recur (.-lastChild wrapper) (dec level))
                 wrapper))]
     (when support/extraneous-tbody?
-      (remove-extraneous-tbody! div html))
+      (remove-extraneous-tbody! div html tag-name start-wrap))
     (when (and (not support/leading-whitespace?)
                (re-find re-leading-whitespace html))
       (restore-leading-whitespace! div html))
@@ -94,6 +95,11 @@
     (.createTextNode js/document s)))
 
 ;;;;;;;;;;;;;;;;;;; Protocols ;;;;;;;;;;;;;;;;;
+
+;; These are to silence a bug where the compiler emits a warning when
+;; it hits the defprotocol for DomContent.
+(declare nodes)
+(declare single-node)
 
 (defprotocol DomContent
   (nodes [content] "Returns the content as a sequence of nodes.")
@@ -127,6 +133,17 @@
   "Gets all the child nodes of the elements in a content. Same as (xpath content '*') but more efficient."
   [content]
   (doall (mapcat dom/getChildren (nodes content))))
+
+(defn common-ancestor
+  "Returns the deepest common ancestor of the argument contents (which are presumed to be single nodes), or nil if they are from different documents."
+  [& contents]
+  (apply dom/findCommonAncestor (map single-node contents)))
+
+(defn ancestor?
+  "Returns true if the first argument is an ancestor of the second argument. Presumes both arguments are single-node contents."
+  [ancestor-content descendant-content]
+  (= (common-ancestor ancestor-content descendant-content)
+     (single-node ancestor-content)))
 
 (defn clone
   "Returns a deep clone of content."
@@ -267,7 +284,7 @@
   content)
 
 (defn set-attrs!
-  "Sets the specified CSS styles fpr each node in the content, given a map of names and values. Style names may be keywords or strings."
+  "Sets the specified attributes for each node in the content, given a map of names and values. Names may be a string or keyword. Values will be cast to a string, multiple values wil be concatenated."
   [content attrs]
   (doseq [[name value] attrs]
     (set-attr! content name value))
@@ -361,7 +378,7 @@
           (doseq [node (nodes content)]
             (events/removeAll node)
             (set! (. node -innerHTML) value))
-          (catch Exception e
+          (catch js/Error e
             (replace-children! content value))))
       (replace-children! content html-string))
     content))
@@ -445,8 +462,9 @@
 
 (defn- array-like?
   [obj]
-  (and obj
-       (.-length obj)))
+  (and obj ;; is not nil
+       (not (.-name obj)) ;; is not an element (i.e, <select>)
+       (.-length obj))) ;; has a length
 
 (defn normalize-seq
   "Some versions of IE have things that are like arrays in that they

@@ -3,160 +3,45 @@
     <title>Windows 8</title>
 </head>
 <style>
-  html, body {
-      background-color: black;
-  }
+    html, body {
+        background-color: black;
+    }
 
-  table {
-      border-collapse:collapse;
-      margin: 0 auto;
-  }
+    table {
+        border-collapse:collapse;
+    }
 
-  table, th, td {
-      border: 2px solid black;
-  }
+    table, th, td {
+        border: 4px solid black;
+    }
 
-  td {
-      width: 48px;
-      height: 48px;
-      background-color: #44b;
-  }
+    td {
+        width: 56px;
+        height: 56px;
+        background-color: #44b;
+    }
+
+    h1 {
+        font: 3em 'Segoe UI';
+        color: white;
+    }
+
+    #content {
+        margin: 0 auto;
+        width: 624px;
+    }
+
+    #t1 { margin-bottom: 20px; }
 </style>
 <body>
-    <table>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td colspan="2" rowspan="2"></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td rowspan="2"></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td rowspan="2"></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td colspan="2" rowspan="2"></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
+    <div id="content">
+        <h1>Start</h1>
+        <table id="t1"></table>
+    </div>
 </body>
 <script src="main.js"></script>
+<script>
+    just.build_table("t1", 10, 8);
+    just.main();
+</script>
 </html>
